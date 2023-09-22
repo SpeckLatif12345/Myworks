@@ -12,8 +12,8 @@ root.title("TODO APP LIST")
 root.geometry("700x300")
 root.resizable(False,False)
 root["bg"]="black"
-# function definitions
 
+# function definitions **********
 # opening sq database
 try:
     con = sq.connect("ListOfTask.db")   # if no error opens database or creates database
