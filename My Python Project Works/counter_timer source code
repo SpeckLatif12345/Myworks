@@ -1,0 +1,143 @@
+# source code for counter timer 
+
+# import things
+
+import tkinter as tk
+import time
+from tkinter import messagebox as mg
+
+# root window
+root=tk.Tk()
+root.title("Time Counter ")
+root.geometry("400x200")
+root.resizable(False,False)
+
+# my class application
+class App(tk.Frame):
+    def __init__(self,master):
+        super().__init__(master,bd=2)
+
+        # declaring variables to be used later
+        self.hour=0
+        self.mins=0
+        self.sec=0
+        self.time=0
+        self.running=False
+        self.build_interface()
+
+    # window to create widgets
+    def build_interface(self):
+        # label widgets
+        self.hour_label=tk.Label(self,text="Hour  :",font="Arial 15 bold",width=8)
+        self.hour_label.grid(row=0,column=0)
+        self.min_label=tk.Label(self,text="Min  :",font="Arial 15 bold",width=8)
+        self.min_label.grid(row=1,column=0)
+        self.sec_label=tk.Label(self,text="Sec  :",font="Arial 15 bold",width=8)
+        self.sec_label.grid(row=2,column=0)
+        self.clock_label = tk.Label(self, text="00:00", font="Arial 30 ")
+        self.clock_label.grid(row=3, column=1)
+
+
+        # entry widgets
+        self.hour_entry=tk.Entry(self,bd=2)
+        self.hour_entry.grid(row=0,column=1)
+        self.min_entry=tk.Entry(self,bd=2)
+        self.min_entry.grid(row=1,column=1)
+        self.sec_entry=tk.Entry(self,bd=2)
+        self.sec_entry.grid(row=2,column=1)
+
+        # start,reset,pause,quit widgets
+        self.start_button=tk.Button(text="Start",fg="red",bg="black",width=5,bd=2,command=lambda : self.start_fun())
+        self.start_button.grid(row=0,column=0,padx=10,pady=10)
+
+        self.reset_button=tk.Button(text="Reset",fg="red",bg="black",width=5,bd=2,command=lambda: self.reset())
+        self.reset_button.grid(row=0,column=1,padx=10,pady=10)
+
+        self.pause_button=tk.Button(text="Pause",fg="red",bg="black",width=5,bd=2,command=lambda : self.pause())
+        self.pause_button.grid(row=0,column=3,pady=10,padx=10)
+
+        self.quit_button=tk.Button(text="Quit",fg="red",bg="black",width=5,bd=2,command=lambda :self.quit())
+        self.quit_button.grid(row=0,column=4,padx=10,pady=10)
+        self.master.bind("<Return>",lambda x :self.start_fun())
+
+
+    # Main Function
+    def start_fun(self):  # start function
+        if self.hour_entry.get():
+            self.hour=int(self.hour_entry.get())
+        else:
+            self.hour=0
+        if self.min_entry.get():
+            self.mins=int(self.min_entry.get())
+        else:
+            self.mins=0
+        if self.sec_entry.get():
+            self.sec=int(self.sec_entry.get())
+        else:
+            self.sec=0
+        # calculation of time
+        self.time=(self.hour*3600) + (self.mins*60)  + self.sec
+
+        self.start_button.configure(text="Stop",command=lambda :self.stop())
+        self.master.bind("<Return>",lambda x :self.stop())
+
+        self.running=True
+        self.timer()
+
+         # function to check time each time
+    def timer(self):
+        if self.running==True:
+            if self.time <=0:
+                self.clock_label.configure(text="Time is UP",font="arial 20 bold")
+            else:
+                self.clock_label.configure(text=self.calculate())
+                self.time-=1
+                self.after(1000,self.timer)
+
+    # function to calculate remain time and return to function to check time
+    def calculate(self):
+        self.hour=self.time//3600
+        self.mins=(self.time//60)%60
+        self.sec=self.time%60
+        s="{:02d}:{:02d}:{:02d}".format(self.hour,self.mins,self.sec)
+        return s
+
+    # function to reset timer
+    def reset(self):
+        self.clock_label.configure(text="00:00")
+        self.hour_entry.delete(0,"end")
+        self.min_entry.delete(0,"end")
+        self.sec_entry.delete(0,"end")
+        self.running=False
+
+
+# function to pass time
+    def pause(self):
+        self.pause_button.configure(text="Resume",command=lambda : self.resume())
+        if self.running==True:
+            self.running=False
+        self.timer()
+
+# function to quit application
+    def quit(self):
+        if  mg.askokcancel("Quite","Do you want to quite"):
+            root.destroy()
+
+        # function to stop time
+    def stop(self):
+        self.start_button.configure(text="Start",command=lambda :self.start_fun())
+        self.master.bind("<Return>",lambda x : self.start_fun())
+        self.running=False
+
+
+       # function to resume time from it stopped
+    def resume(self):
+        self.pause_button.configure(text="Pause",command=lambda :self.pause())
+        if self.running==False:
+            self.running=True
+        self.timer()
+
+
+App(root).place(x=50,y=50)
+root.mainloop()
+
