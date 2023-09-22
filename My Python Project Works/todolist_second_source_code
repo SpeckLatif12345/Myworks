@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import messagebox as mg
 import sqlite3  as sq
 
-list_content=[]   # creating empty list
+list_content=[]   # creating empty list  (global variable)
 
 # creating root window
 root=tk.Tk()
@@ -23,7 +23,7 @@ except:  # if fails to open database, message to display
 
    # creating cursor to execute commands
 cur=con.cursor()
-cur.execute( "CREATE TABLE  IF NOT EXISTS  Tasks( Name_of_Tasks) ") # creating talbe if does not exist in database
+cur.execute( "CREATE TABLE  IF NOT EXISTS  Tasks( Name_of_Tasks) ") # creating table  if does not exist in database
 
 
 
