@@ -1,0 +1,162 @@
+# source code for todolist Second zip
+import tkinter as tk
+from tkinter import messagebox as mg
+import sqlite3  as sq
+
+list_content=[]   # creating empty list
+
+# creating root window
+root=tk.Tk()
+root.title("TODO APP LIST")
+root.geometry("700x300")
+root.resizable(False,False)
+root["bg"]="black"
+# function definitions
+
+# opening sq database
+try:
+    con = sq.connect("ListOfTask.db")   # if no error opens database or creates database
+
+except:  # if fails to open database, message to display
+    mg.showerror("Error","Cannot open sq database")
+
+   # creating cursor to execute commands
+cur=con.cursor()
+cur.execute( "CREATE TABLE  IF NOT EXISTS  Tasks( Name_of_Tasks) ") # creating talbe if does not exist in database
+
+
+
+# function to add task or item
+def Add_task():
+    task_string=entry_box.get()
+    if len(task_string)==0:
+        mg.showinfo("Please enter a Task")
+
+    else:
+        list_content.append(task_string)
+        cur.execute("INSERT INTO Tasks Values(?)",(task_string,)  )
+        con.commit()
+        entry_box.delete(0,"end")
+        update()
+
+
+
+# function to delete  item or task  from list
+def del_task():
+    content_delete=listbox.get(tk.ACTIVE)  # gets the selected item in the listbox
+    if  content_delete in list_content:
+        list_content.remove(content_delete)
+        cur.execute("DELETE FROM Tasks  WHERE  Name_of_Tasks=? ",(content_delete,) )
+        con.commit()
+        update()
+
+# function to delete all items or tasks
+def del_all_task():
+    message_warnng=mg.askyesno("Delete All" ,"Are You Sure ? ")
+    if message_warnng == True:
+        global list_content  # using  same or  old list_content variable
+        list_content = []
+        cur.execute("DELETE FROM Tasks")
+        con.commit()  # saving changes in  sq database
+        update()
+
+
+
+# function to update to listbox  each time task is added
+def update():
+    listbox.delete(0,tk.END)
+    for x in list_content:
+        listbox.insert(tk.END,x)
+    display_label_fun()
+
+
+# retrieve function ; to get items stored in sq database back to the list box
+def retrieve_fun():
+    for row in cur.execute("SELECT Name_of_Tasks FROM Tasks"):
+        list_content.append(row[0])
+        update()
+
+
+# exit function ;  to exit  program
+def exit():
+    answer=mg.askyesno("Quit","Do You want to Quit")
+    if answer == True:
+        root.destroy()
+
+
+# function to display result from list box ; at the right side
+def display_label_fun():
+    num=1
+
+    if list_content==[]:
+        display_task.delete(1.0,tk.END)
+
+    else:
+        display_task.delete("1.0", tk.END)
+        for x in list_content:
+            display_task.insert(tk.END, str(num) + ":" + " ")
+            display_task.insert(tk.END, x)
+            display_task.insert(tk.END, ("\n"))
+            num = num + 1
+
+
+
+
+# creating widgets   for the app
+top_label=tk.Label(text="TODO LIST APP", bg="black",fg="#ffd700",font="arial 20 bold"  ) # top label widget
+top_label.pack()
+
+enter_task_label=tk.Label(text="ENTER TASK ",bg="black",fg="white", font="arial 10 bold")
+enter_task_label.place(x=50,y=50)
+
+entry_box=tk.Entry(width=40)  # entry  box ; to enter task
+entry_box.place(x=150, y=50)
+
+# display list of tasks
+display_label=tk.Label(text="List of Tasks",bg="#D4AC0D",fg="#172537",font="broadway 15 bold")
+display_label.place(x=530,y=40)
+
+# text widget ; right side
+display_task=tk.Text(height=15,width=40,bg="#000000",fg="white",insertbackground="white")
+display_task.place(x=500,y=80)
+
+# widget to add task
+add_task=tk.Button(text="ADD TASK",fg="black",bg="#D4AC0D",font="arial 10 bold",relief=tk.RAISED,command=Add_task) # add button
+add_task.place(x=50,y=100)
+
+# widget to delete task
+del_task_but=tk.Button(text="DELETE  TASK",bg="#D4AC0D",font="arial 10 bold",relief=tk.RAISED,command=del_task) # delete only one button
+del_task_but.place(x=150,y=100)
+
+# widget to delete all tasks
+del_all_but=tk.Button(text="DELETE ALL TASK",bg="#D4AC0D",font='arial 10 bold',command=del_all_task) # delete  all button
+del_all_but.place(x=280,y=100)
+
+# widget to exit program
+exit_button=tk.Button(text="Exit",width=20,bg="#D4AC0D",font="arial, 10 bold",relief=tk.RAISED,command=exit)
+exit_button.place(x=150,y=260)
+
+# frame widget to put listbox into it
+frame=tk.Frame(bg="blue" ,height=100,width=300)
+frame.place(x=85,y=150)
+
+# listbox to put  items into
+listbox=tk.Listbox(frame,height=6,width=50)
+listbox.pack()
+
+
+ # calling retrieve function  ; this function to pull data from sq database to put  items into listbox when program
+retrieve_fun()   # opens  every time
+
+
+# calling display_label function to display list of tasks ; to display after  retrieve function
+display_label_fun()
+
+## feel free to check for any bugs and correct them if any
+
+
+
+
+root.mainloop()
+con.close()  # closing sq database
+
