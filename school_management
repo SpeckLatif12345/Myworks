@@ -1,0 +1,1139 @@
+ 
+
+//  *******************  School Management System ************************
+
+#include<stdio.h>
+#include<conio.h>
+#include<string.h>
+#include<windows.h>
+#include<stdlib.h>
+#define NAME 20
+#define WORK
+#define FINAL
+#define PASS
+// header function ************
+void header();
+
+// exit function ***************
+void exit_function(FILE*  fp);
+
+    // delete function ***************
+  void del_func( FILE *fp, char [] );
+
+// declaring other functions ***
+void add_new_student(FILE* fp);
+void modify_student_details(FILE* fp);
+void view_student_details(FILE* fp);
+void view_all_student_details(FILE* fp);
+void delete_student_details(FILE* fp);
+
+// declaring function to use in program
+void d_pass();
+char* new_pass();
+void changed_pass();
+void welcome();
+void heading();
+void posi_x_y(int,int);
+void   option(FILE *fp);
+char reset;
+char name[20];
+
+// Struct for students
+typedef struct student
+{
+    char first_name[NAME];
+    char second_name[NAME];
+    int class_;
+    int marks;
+    char roll[NAME];
+}STUDENT; //  used type def for this *************
+
+// struct for password
+typedef struct password
+{
+    char pass[20];
+}PASSWORD;
+ void main()
+ {
+     FILE* fp;
+     fp=fopen("reset.txt","r");
+     reset=fgetc(fp);
+     fclose(fp);
+
+   system("color 9f");
+   SetConsoleTitle("Student Management Database System (SMDS)");   // calling windows 32 api to  to change terminal title
+   posi_x_y(24,10);
+
+   //default password
+   if(reset=='0')
+   d_pass();
+
+   else
+    changed_pass(); // function to change password *************
+
+   welcome();   // *************   function to welcome ***********************
+   system("color 9f");
+   system("cls");
+   // opening database file
+
+   fp=fopen("db.txt","a+");
+   if(fp==NULL)
+   {
+       system("cls");
+       posi_x_y(24,10);
+       puts("cannot open database file, Please try again ");
+       exit(0);
+   }
+
+    system("cls");
+    posi_x_y(24,6);
+      system("color 01");
+    option(fp);
+
+
+
+     getch();
+
+
+ }
+
+void posi_x_y(int x,int y)
+{
+    COORD cord;
+    cord.X = x;
+    cord.Y = y;
+
+    HANDLE hconsole; // using  windows api  functions ***************
+    hconsole= GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleCursorPosition(hconsole,cord);
+
+}
+ //  password function
+void d_pass()
+
+{
+    int counter=0;
+    char pass[10];
+    char de_pass[10]="12345";
+
+
+
+    while (counter<5)
+    {
+                     posi_x_y(24,11);
+         printf("Enter default password as : 12345 if first time login\n");
+         posi_x_y(24,12);
+        gets(pass);
+        if(strcmp(pass,de_pass)==0)
+           {
+            posi_x_y(24,10);
+            break;
+           }
+
+           else
+           {
+             posi_x_y(24,14);
+             printf("You entered wrong password, Please Try again");
+
+               sleep(1);
+           }
+
+           counter++;
+            system("cls");
+
+
+    }
+
+       if (counter==5)
+    {
+        posi_x_y(24,50);
+    printf("You Entered too many wrong passwords, exiting now ********************");
+          getch();
+        exit(0);
+
+        }
+
+
+     return;
+
+}
+  // changed password
+
+   char*  new_pass()
+  {
+
+      PASSWORD static password;
+      printf("Enter the new Password\n");
+      posi_x_y(24,12);
+      scanf("%s",password.pass);
+       posi_x_y(24,14);
+      printf("Password Changed");
+      sleep(3);
+
+
+
+
+      return password.pass;
+
+  }
+  // password is changed
+  void changed_pass()
+
+{
+    char p[10];
+    FILE* rp;
+    rp=fopen("pass.txt","r");
+    if(rp==NULL)
+        puts("Cannot open file");
+
+    fgets(p,'\n',rp);
+    fclose(rp);
+    int counter=0;
+    char pass[20];
+
+
+    while (counter<5)
+    {
+                     posi_x_y(24,11);
+         printf("Enter password\n");
+         posi_x_y(24,12);
+        gets(pass);
+        if(strcmp(pass,p)==0)
+           {
+            posi_x_y(24,10);
+            break;
+           }
+
+           else
+           {
+             posi_x_y(24,14);
+             printf("You entered wrong password, Please Try again");
+
+               sleep(1);
+           }
+
+           counter++;
+            system("cls");
+
+
+    }
+
+       if (counter==5)
+    {
+        posi_x_y(24,50);
+    printf("You Entered too many wrong passwords, exiting now ********************");
+          getch();
+        exit(0);
+
+        }
+   return;
+}
+
+
+
+
+ // welcome function
+ void welcome()
+ {
+     system("cls");
+     system(" color 90");
+
+     posi_x_y(24,10);
+
+     char star1[]="//////////";
+     int i;
+
+          posi_x_y(24,11);
+     printf("*********************************************\n");
+        posi_x_y(24,12);
+     printf("*Please Wait  Loading *Database File*       *\n");
+      posi_x_y(24,13);
+     printf("*********************************************");
+     posi_x_y(24,12);
+     printf("\t\t\t\t\t\t");
+     for(i=0;i<10;i++)
+     {
+         printf("%c",star1[i]);
+         sleep(1);
+
+     }
+
+
+
+return;
+
+ }
+
+ // option function
+
+ void  option(FILE *fp)
+ {
+     int choose;
+     int yes=1;
+           while (yes==1)
+           {
+            header(); // header function ****************
+               posi_x_y(24,6);
+     printf("\t\tEnter the option you want\n");
+     posi_x_y(24,8);
+
+     printf("\t\t1. Add New Student\n");
+     posi_x_y(24,10);
+     printf("\t\t2. Modify Student Details \n\n");
+     posi_x_y(24,12);
+     printf("\t\t3. View Student Details\n");
+     posi_x_y(24,14);
+     printf("\t\t4. View all Students Details\n");
+     posi_x_y(24,16);
+     printf("\t\t5. Delete a Student Details\n");
+     posi_x_y(24,18);
+     printf("\t\t6. Change Password\n");
+     posi_x_y(24,20);
+     printf("\033[0;031m");
+     printf("\t\t7. exit\n");
+     printf("\033[0;034m");
+     posi_x_y(24,22);
+     printf("\t\tOption:   ");
+
+
+     scanf("%d",&choose);
+
+
+        switch(choose)
+        {
+            case 1:
+                {
+                system("cls");
+                header(); //  header function *************
+                  posi_x_y(24,10);
+                add_new_student(fp);
+                break;
+                } // end of case 1
+
+
+            case 2:
+                {
+                system("cls");
+                header(); // header function **********
+                posi_x_y(24,10);
+                modify_student_details(fp);
+                break;
+
+                } // end case 2
+
+            case 3:
+                {
+                    system("cls");
+                    header(); // header function *********
+                    posi_x_y(24,10);
+                    view_student_details(fp);
+                    break;
+                } // end of case 2
+
+            case 4:
+                {
+                    system("cls");
+                    header(); // header function *********
+                    posi_x_y(24,10);
+                    view_all_student_details(fp);
+                    break;
+                }
+
+            case 5:
+                {
+                    system("cls");
+                    header(); // header function **********
+                    posi_x_y(24,12);
+                    delete_student_details(fp) ;
+                    break;
+                }
+        case 6:
+            {
+
+               system("cls");
+               header(); // header function ***********
+                  posi_x_y(24,10);
+            strcpy(name,new_pass());
+            FILE*  np;
+            np=fopen("pass.txt","w");
+            if (np==NULL)
+            {
+                system("cls");
+                header(); // header function *********
+                posi_x_y(24,10);
+                 puts("cannot open file");
+
+            }
+              fputs(name,np);
+              fclose(np);
+
+              np=fopen("reset.txt","w");
+              fputc('1',np);
+              fclose(np);
+
+
+            break;
+            }// end of case 6
+
+        case 7:
+            {
+                 system("cls");
+                 header(); // header function *********
+                 posi_x_y(24,12);
+                 exit_function(fp); // function to exit
+                 break;
+
+            } // end of case 7
+
+        default:
+            {
+                printf("\033[0;31m"); // red color
+              posi_x_y(28,24);
+             printf("WRONG  OPTION");
+                sleep(1);
+                system("cls");
+              posi_x_y(24,6);
+              printf("\033[0;34m");// blue color
+
+              break;
+
+            } // end of default
+
+
+
+        } // end of switch
+
+
+                 system("cls");
+                   option(fp);
+
+
+
+           } // end of while loop
+
+
+
+           } // end of  option function
+
+
+           // ********   functions  ************
+
+           // function to write roll automatically
+           void heading()
+           {
+               char roll[]="Roll ID";
+               char first[]="First Name";
+               char second[]="Second Name";
+               char class_no[]="Class";
+               char  score[]="Marks";
+
+
+                     printf("\033[0;31m");
+               printf("%s%15s%18s%11s%17s ",roll,first,second,class_no,score);
+                      printf("\033[0m");
+
+           } // end of  row function
+
+void  add_new_student(FILE* fp)
+{
+      // header(); // header function *********
+
+    STUDENT student;
+      /* Testing Codes ****************
+
+   // printf("Enter Roll, e.g Roll-1: \n"); // enter student details
+    //posi_x_y(24,11);  // changing cursor position
+   // scanf("%s",&student.roll); // taking student roll
+    //fprintf(fp,"%s",student.roll); // printing into file
+    //fflush(fp);  // fflush  pushes bytes in buffer to be written in the file   (*fp) immediately  without closing  *fp
+    //fputs("\t\t",fp); // giving horizontal space between  text
+
+     */ // End of Testing Codes *******************
+
+    posi_x_y(24,11);
+    printf("Enter  Student First Name \n");
+    posi_x_y(24,12);
+    scanf("%s",&student.first_name);
+    fprintf(fp,"%s",student.first_name);
+    fflush(fp);
+    fputs("\t\t",fp);
+     posi_x_y(24,13);
+     printf("Enter Student Second Name \n");
+     posi_x_y(24,14);
+     scanf("%s",&student.second_name);
+     fprintf(fp,"%s",student.second_name);
+     fflush(fp);
+     fputs("\t\t",fp);
+     posi_x_y(24,15);
+      printf("Enter Student Class\n");
+      posi_x_y(24,16);
+    scanf("%d",&student.class_);
+    fprintf(fp,"%d",student.class_);
+    fflush(fp);
+    fputs("\t\t",fp);
+    posi_x_y(24,17);
+    printf("Enter Student Marks\n");
+    posi_x_y(24,18);
+    scanf("%d",&student.marks);
+    fprintf(fp,"%d",student.marks);
+    fflush(fp);
+    fputs("\n",fp); // put newline at end of every  written data
+
+    system("cls");
+    posi_x_y(24,12);
+    printf("STUDENT SUCCESSFULLY CREATED");
+     getch();
+
+} // end of this function
+
+void modify_student_details(FILE* fp)  // function to modify student details
+{
+    // header(); // header function **********
+
+ char block[100];
+    int counting=1;
+    int rem=13;
+    char check[NAME],check_2[NAME];
+    char your_text[40];
+    char word[]="ok";
+
+
+
+     // roll number to print result
+    printf(" Enter  First Name  or Second Name   to modify  Student  Details  ");
+    posi_x_y(24,12);
+    scanf("%s",your_text);
+
+
+             rewind(fp);
+
+
+
+     #ifdef PASS
+    while(fgets(block,30,fp)!=NULL)
+
+         {
+             sscanf(block,"%s %s",check,check_2);
+
+
+                         if(strcmp(check,your_text)==0)
+                         {
+                             system("cls");
+                             posi_x_y(24,12);
+
+                             printf("Roll-%d:       ",counting);
+                             printf("Details Found -> %s  " , block);
+                             sleep(1);
+                             del_func(fp,block);
+
+
+                             break;
+                         } // end if block;
+
+                              else if(strcmp(check_2,your_text)==0)
+                            {
+                                system("cls");
+                                posi_x_y(24,12);
+
+                                   printf("\033[0;34m"); //  changing text to blue color
+
+
+                                printf("Roll-%d:        ",counting);
+                                printf("Details Found  -> %s ", block);
+                                del_func(fp,block);
+
+
+                                break;
+                            } // end of else if block
+
+                     counting++;
+         } // end of while loop
+
+          #endif // PASS
+
+
+              /*   *************  Testing Codes ***************
+             #ifdef SHOW
+          while(fscanf(fp,"%s",block)!=EOF)
+          {
+
+               fgetpos(fp,&pos);
+               system("cls");
+               posi_x_y(24,12);
+              printf("%d, %s",pos,block);
+              sleep(5);
+
+
+          }
+          #endif // SHOW  *************  Macro ******************
+
+                      */ //  end of  Testing Codes ************************
+
+
+               if(strcmp(check,your_text)&&strcmp(check_2,your_text)!=0)
+               {
+                    system("cls");
+                    posi_x_y(24,12);
+                    printf("Cannot Find Student Details");
+               }
+
+
+               else
+               {
+                   system("cls");
+               printf("\033[0;32m"); // changing  text color to green
+               posi_x_y(24,8);
+               printf("RE-ENTER STUDENT DETAILS ");
+
+                 printf("\033[0;34m"); // changing text color back to blue
+
+               add_new_student(fp);
+
+               }
+
+               system("cls");
+               posi_x_y(24,12);
+               printf("\033[0;33m"); // color yellow
+               printf("STUDENT SUCCESSFULLY MODIFIED");
+
+               printf("\033[0;34m");
+               posi_x_y(24,14);
+               printf("PRESS  ANY KEY  TO GO BACK TO MAIN MENU");
+
+    getch();
+
+
+
+
+
+}// end of this modify function
+
+
+
+// View Single Student Details
+void view_student_details(FILE* fp)
+{
+     // header(); // *******  header function ******
+
+    char your_text[40];
+    char check[NAME],check_2[NAME];
+    char finish[100];
+    char* result;
+    int counting=1;
+
+
+
+    // roll number to print result
+    printf("Enter Student First Name or  Second Name to view  Student  Details ");
+    posi_x_y(24,11);
+    scanf("%s",your_text);
+
+
+             rewind(fp);
+                     posi_x_y(24,12);
+
+                  while(fgets(finish,30,fp)!=NULL)
+
+
+                    #ifdef FINAL
+                  {
+                     sscanf(finish,"%s %s",check,check_2);
+
+                         if(strcmp(check,your_text)==0)
+                         {
+                             system("cls");
+                             posi_x_y(24,12);
+                             heading();
+
+                             printf("\033[0;34m");  // color blue
+
+                             posi_x_y(24,14);
+                             printf("Roll-%d:       ",counting);
+                             puts(finish);
+
+                             break;
+
+                         } // end of if
+
+
+                           else if(strcmp(check_2,your_text)==0)
+                            {
+                                 system("cls");
+                                posi_x_y(24,12);
+                                heading();
+
+                                printf("\033[0;34m"); // color blue text
+
+                                posi_x_y(24,14);
+                                printf("Roll-%d:        ",counting);
+                                puts(finish);
+                                break;
+                            }
+
+                            counting++;
+
+                  }// end of fist while loop
+                     #endif
+
+
+
+
+
+
+
+
+
+                     #ifdef WORK  // ************ Macro *****************
+
+               if(strcmp(check,your_text)&&strcmp(check_2,your_text)!=0)
+               {
+                    system("cls");
+                    posi_x_y(24,12);
+                    printf("Cannot Find Student Details");
+               }
+
+             #endif  // End of Macro ****************
+
+
+
+               printf("\n");
+               posi_x_y(24,18);
+
+            printf("PRESS ANY KEY TO GO BACK MAIN MENU");
+            getch();
+
+} // end of function
+
+
+// View All Students Details
+void view_all_student_details(FILE *fp)
+{
+     // header(); // header function **********
+
+         int num=1;
+    char block[100];
+    int count=12;
+
+
+    rewind(fp);
+    posi_x_y(24,10);
+    heading();
+    //system("color 01");
+    printf("\033[0;34m");  // color blue
+    posi_x_y(24,count);
+
+    while(fgets(block,30,fp)!= NULL)
+    {
+        printf("Roll-%d:        ",num);
+        puts(block);
+        puts("\n");
+        count=count+1;
+        posi_x_y(24,count);
+         num++;
+
+    }
+
+    printf("\n");
+    posi_x_y(24,++count);
+
+
+      printf("PRESS ANY KEY TO GO BACK TO MAIN MENU");
+
+
+    getch();
+
+
+} // end of this function
+
+
+// delete student detail
+void delete_student_details(FILE* fp)
+{
+     // header();  // header function
+
+    char block[100];
+    int counting=1;
+    int rem=13;
+    char check[NAME],check_2[NAME];
+    char your_text[40];
+    char word[]="ok";
+
+    fpos_t pos;
+
+
+     // roll number to print result  ************
+
+    printf(" Enter  First Name  or Second Name   to delete  Student  Details  ");
+    posi_x_y(24,13);
+    scanf("%s",your_text);
+
+
+             rewind(fp);
+
+
+            // **************  Macros ********************
+     #ifdef PASS
+    while(fgets(block,30,fp)!=NULL)
+
+         {
+             sscanf(block,"%s %s",check,check_2);
+
+
+                         if(strcmp(check,your_text)==0)
+                         {
+                             system("cls");
+                             posi_x_y(24,12);
+
+                             printf("Roll-%d:       ",counting);
+                             printf("Details Found -> %s  " , block);
+                             sleep(1);
+                             del_func(fp,block);
+
+
+                             break;
+                         } // end if block;
+
+                              else if(strcmp(check_2,your_text)==0)
+                            {
+                                system("cls");
+                                posi_x_y(24,12);
+
+                                   printf("\033[0;34m"); //  changing text to blue color
+
+
+                                printf("Roll-%d:        ",counting);
+                                printf("Details Found  -> %s ", block);
+                                del_func(fp,block);
+
+
+                                break;
+                            } // end of else if block
+
+                     counting++;
+         } // end of while loop
+
+
+          #endif // PASS ************** Macro ******************
+
+
+
+
+
+               /*   Testing Codes ***************************
+
+             #ifdef SHOW
+          while(fscanf(fp,"%s",block)!=EOF)
+          {
+
+               fgetpos(fp,&pos);
+               system("cls");
+               posi_x_y(24,12);
+              printf("%d, %s",pos,block);
+              sleep(5);
+
+
+          }
+          #endif // SHOW
+
+
+                */  // End of Testing Codes ************************
+
+
+               if(strcmp(check,your_text)&&strcmp(check_2,your_text)!=0)
+               {
+                    system("cls");
+                    posi_x_y(24,12);
+                    printf("Cannot Find Student Details");
+               }
+
+    getch();
+
+
+
+
+
+
+
+}// end of this function
+
+// Demo delete function
+ void del_func(FILE *fp, char Lin[])
+ {
+          // header();
+     int true=1;
+     char check[100]; // string
+     char check_2[]="****"; // string
+     int one,two; // int , int
+     int flag=0;
+     // for the file pointer
+     char word_one[40]; // string
+     char word_two[40]; // string
+     int num,num_2; // int
+
+     // opening temp file for file transferring
+     FILE *Temp;
+     Temp=fopen("temp.txt","w");
+     if(Temp==NULL)
+     {
+       system("cls");
+       posi_x_y(24,12);
+       puts("Cannot Open file");
+       exit(0);
+     }
+
+
+
+                     // Testing Codes ***********************
+                /*   OPTIONAL  CODE
+                sscanf(Lin,"%s %s %d %d",check,check_2,&one,&two);
+
+                  while(fscanf(fp,"%s %s %d %d",word_one,word_two,&num,&num_2)!=EOF)
+       {
+           if (strcmp(word_one,check)!=0 && strcmp(word_two,check_2)!=0 && num!=one && num_2!=two)
+           {
+            fprintf(Temp,"%s",word_one);
+            fflush(Temp);
+
+            fputs("\t\t",Temp);
+
+            fprintf(Temp,"%s",word_two);
+            fflush(Temp);
+
+            fputs("\t\t",Temp);
+
+            fprintf(Temp,"%d",num);
+            fflush(Temp);
+
+            fputs("\t\t",Temp);
+
+            fprintf(Temp,"%d",num_2);
+            fflush(Temp);
+
+            fputs("\n",Temp);
+
+
+           } // end of if statement
+
+
+
+
+
+       }// end of while loop
+
+           */  //  END OF OPTIONAL CODE
+
+            // end of Testing Codes ***************************
+
+           sleep(1);
+
+           system("cls");
+           posi_x_y(24,12);
+           system("color 04");
+           printf("PLEASE WAIT DELETING RECORD OF STUDENT");
+           posi_x_y(24,14);
+
+           while(flag<5)
+           {
+               printf("%s\t",check_2);
+               sleep(1);
+               flag++;
+
+           } // end of while loop
+
+
+
+
+
+
+
+
+                // NEW CODE
+                 rewind(fp);
+                 while(fgets(check,30,fp)!=NULL)  // ***********  while block ****************
+                 {
+                     if (strcmp(check,Lin)!=0)
+                     {
+                       flag=fwrite(check,sizeof(char),strlen(check),Temp);
+
+
+                              /* Testing Code **********************
+                        //system("cls");
+                        //posi_x_y(24,12);
+
+                            // printf("%s",check);
+                             // sleep(1);
+
+                             */ // End of Testing Code **************
+
+                     } // end of if
+
+                 } // end of while block
+
+
+
+                 if(flag>0)
+                     {
+                          system("color 01");
+                            system("cls");
+                             posi_x_y(24,12);
+                       printf("STUDENT RECORD DELETED SUCCESFULLY");
+
+                     } // end of if
+                      fclose(fp);
+                     fclose(Temp);
+
+                      posi_x_y(24,14);
+                      printf("PRESS ENTER TO GO BACK TO MAIN MENU");
+
+                      if(remove("db.txt")!=0)
+                      {
+                          system("cls");
+                          posi_x_y(30,12);
+                          printf("ERROR  IN UPDATING DATABASE PROCESS ONE");
+                          sleep(2);
+                      }
+
+
+                      if(rename("temp.txt","db.txt")!=0)
+                      {
+                          system("cls");
+                          posi_x_y(30,12);
+                          printf("ERROR IN UPDATING DATABASE PROCESS TWO");
+                          sleep(2);
+                      }
+
+
+          /*   Testing Codes  *******************
+     #ifdef DELETING
+  while(true)
+  {
+
+      flag=fwrite(text,sizeof(char), 1 ,fp);
+      break;
+
+
+
+  }
+
+ if(flag)
+    printf(" Details deleted succesfully");
+
+    else
+        printf(" Details  Could Not Be Deleted, Please Try again");
+
+
+
+
+    system("cls");
+    posi_x_y(24,12);
+    printf("This is working ");
+    printf("%d",two);
+
+    #endif // DELETING    End of Testing Code *****************
+
+      */
+
+      FILE* fn;
+     fn=fopen("db.txt","a+");
+   if(fp==NULL)
+   {
+       system("cls");
+       posi_x_y(24,10);
+       puts("cannot open database file, Please try again ");
+       exit(0);
+       option(fn);
+   }
+
+    getch();
+
+
+ }// end of function
+
+
+ // function to exit
+ void exit_function(FILE *fp)
+  {
+     //  header();
+      int flag=0;
+      char star[]="*****";
+      char answer [20];
+
+      char yes_[]="yes";
+      char no_[]="no";
+
+         printf("\033[0;31m"); // red color
+      printf("DO YOU WANT TO QUIT ,type \"yes or no\"  ?");
+        posi_x_y(24,14);
+        printf("\033[0;34m"); // blue color
+      scanf("%s",answer);
+
+      if(strcmp(answer,yes_)==0)
+            {
+             system("cls");
+             posi_x_y(24,12);
+             printf("PLEASE WAIT CLOSING DATABASE   ");
+             printf("\033[0;31m"); // red color
+
+              while(flag<5)
+           {
+               printf("%s\t",star);
+               sleep(1);
+               flag++;
+
+           } // end of while
+
+
+                 fclose(fp);
+                  posi_x_y(24,20);
+                  exit(0);
+
+
+            } // end of if
+
+
+          else if( strcmp(answer,no_)==0)
+            {
+                system("cls");
+                posi_x_y(24,12);
+                option(fp);
+
+            } // end of no case
+
+            else
+            {
+                system("cls");
+                  posi_x_y(24,12);
+                  printf("\033[0;31"); //  red color
+                  printf("WRONG ANSWER, PLEASE TRY AGAIN");
+                  sleep(1);
+                  printf("\033[034"); // blue color
+
+
+                     system("cls");
+                     posi_x_y(24,12);
+                    option(fp);
+
+            }
+
+
+  } // end of function
+
+
+
+  // header function to display at the top *********
+  void header()
+  {
+
+  char heading[]= "**********  STUDENT MANAGEMENT DATABASE  **********";
+
+  printf("\033[0;33m");
+
+  posi_x_y(24,2);  // yellow color
+  printf("%s",heading);
+
+  printf("\033[0;34m"); // blue color
+
+
+
+  } // end of header function
+
