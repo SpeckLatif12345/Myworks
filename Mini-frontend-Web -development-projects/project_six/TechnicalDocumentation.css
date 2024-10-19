@@ -1,0 +1,122 @@
+body{
+	 font-family: arial;
+	 margin: 0;
+	 padding: 0
+	 background-color: #f4f8fb;
+	 display: flex;
+	 flex-direction: column;
+
+}
+
+
+.page-header{
+	  background-color:#35424a;
+	  color:white;
+	  text-align:center;
+	  padding:10px 0 10px;
+}
+
+main{
+	display:flex;
+	flex-direction:row;
+
+}
+
+
+
+
+
+.navbar{
+ width: 20%;
+ background-color : #2c3e50;
+ height:100vh;
+ overflow:auto;
+ flex-shrink:0;
+ padding : 15px;
+ margin-right: 20px;
+
+}
+
+
+  .navbar ul{
+	 list-style-type:none;
+	 padding;
+}
+
+ .navbar ul li  a{
+	text-decoration:none;
+	color:#ffffff;
+	display: block;
+	padding : 10px;
+	transition : background-color  0.3s;
+}
+
+ .navbar ul li a:hover{
+	background-color : #1abc9c;
+}
+
+
+.documenContainer{	
+flex-grow:1;
+padding:20px;
+background-color:#ffffff;
+}
+
+.documentationContainer section{
+	 margin-left :25px;
+	 margin-botton:25px;
+	 border-bottom: 2px solid #eee;
+	 padding-bottom : 20px;
+}
+
+.documenContainer h2{
+	color: #2c3e50;
+	margin-botton : 15px;
+
+}
+
+.documenContainer p {
+	line-height:1.6;
+	color: #333333;
+}
+
+
+@media screen and (max-width:768px)
+{
+
+	.mainContainer{
+		flex-direction: column;
+	}
+
+	.navbar{
+		width:100%;
+		height: auto;
+		order: 0;
+	}
+}
+
+
+@media screen and (max-width:480px)
+{
+
+.navbar ul {
+  display: flex;
+  flex-direction: column;
+}   
+
+.navbar ul li a {
+
+	  padding: 8px;
+}
+
+
+#documenContainer{
+	padding: 10px;
+}
+
+}
+
+
+
+
+

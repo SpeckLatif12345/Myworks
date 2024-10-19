@@ -1,0 +1,61 @@
+body{
+	font-family: Arial,sans-serif;
+	width: 1000px;
+	margin:auto;
+	margin-top: 20px;
+	
+}
+
+header{
+	text-align: center;
+	padding-top:10px;
+	background-color: #686868;
+	
+}
+
+header img{
+	 width:150px;
+	 height: 150px;
+	 border-radius: 50%;
+	 margin-top: 10px;
+
+}
+
+section{
+	border: 2px solid
+	margin:20px;
+}
+
+
+.project{
+     width :200px;
+     height: 200px;
+     display:inline-block;
+     border: 2px solid #ccc;;
+      text-align: center;
+      line-height: 200px;
+      background-color: #404040;
+}
+
+#project2 , #project3{
+	margin-left:150px;
+}
+
+#about_me,#work{
+	background-color: #dcdcdc;
+}
+
+footer ul{
+	list-style: none;
+}
+
+h2{
+	text-align: center;
+}
+
+footer{
+	text-align: center;
+	background-color: #686868
+}
+
+

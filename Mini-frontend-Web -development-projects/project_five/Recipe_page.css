@@ -1,0 +1,45 @@
+body{
+
+	font-family: Arial, sans-serif;
+	background-color: #fffbea;
+	color: #333;
+	margin: 10px;
+	padding: 0;
+}
+
+
+header{
+ background-color: #79a3b1;
+ color: white;
+ padding: 20px 0;
+ text-align: center;
+
+}
+
+
+main{
+  
+    width: 80%;
+    margin: 20px auto;
+}
+
+section{
+    background-color: #f8f8f8;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px #404040;
+
+}
+.Introduction p {
+    margin-left: 20px;
+}
+
+
+section h2 {
+	color: #b3568f;
+}
+
+ul, ol{
+	margin-left: 10px;
+}
